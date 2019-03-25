@@ -1,8 +1,9 @@
 import URL from 'url';
 import cheerio from 'cheerio';
+import TurndownService from 'turndown';
 
 import Resource from 'resource';
-import { validateUrl, Errors } from 'utils';
+import { validateUrl } from 'utils';
 import getExtractor from 'extractors/get-extractor';
 import RootExtractor from 'extractors/root-extractor';
 import collectAllPages from 'extractors/collect-all-pages';
@@ -26,18 +27,22 @@ const Mercury = {
     const parsedUrl = URL.parse(url);
 
     if (!validateUrl(parsedUrl)) {
-      return Errors.badUrl;
+      return {
+        error: true,
+        message:
+          'The url parameter passed does not look like a valid URL. Please check your URL and try again.',
+      };
     }
 
     const $ = await Resource.create(url, html, parsedUrl);
-
-    const Extractor = getExtractor(url, parsedUrl, $);
-    // console.log(`Using extractor for ${Extractor.domain}`);
 
     // If we found an error creating the resource, return that error
     if ($.failed) {
       return $;
     }
+
+    const Extractor = getExtractor(url, parsedUrl, $);
+    // console.log(`Using extractor for ${Extractor.domain}`);
 
     // if html still has not been set (i.e., url passed to Mercury.parse),
     // set html from the response of Resource.create
@@ -81,6 +86,13 @@ const Mercury = {
         total_pages: 1,
         rendered_pages: 1,
       };
+    }
+
+    if (contentType === 'markdown') {
+      const turndownService = new TurndownService();
+      result.content = turndownService.turndown(result.content);
+    } else if (contentType === 'text') {
+      result.content = $.text($(result.content));
     }
 
     return result;

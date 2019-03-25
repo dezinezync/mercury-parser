@@ -1,6 +1,5 @@
 import assert from 'assert';
 import cheerio from 'cheerio';
-import { Errors } from 'utils';
 import { getEncoding } from 'utils/text';
 
 import { record } from 'test-helpers';
@@ -23,7 +22,7 @@ describe('Resource', () => {
       const url = 'http://nytimes.com/500';
       const error = await Resource.create(url);
 
-      assert.equal(error, Errors.badUrl);
+      assert(/instructed to reject non-2xx/i.test(error.message));
     });
 
     it('fetches with different encoding on body', async () => {
@@ -36,6 +35,36 @@ describe('Resource', () => {
       const encodedU = /&#xFC;/g;
 
       assert.equal(encodedU.test($.html()), true);
+      assert.equal(typeof $, 'function');
+    });
+
+    it('fetches with different encoding and case insensitive regex', async () => {
+      const url =
+        'https://www.finam.ru/analysis/newsitem/putin-nagradil-grefa-ordenom-20190208-203615/';
+      const $ = await Resource.create(url);
+      const metaContentType = $('meta[http-equiv=content-type i]').attr(
+        'value'
+      );
+
+      assert.equal(getEncoding(metaContentType), 'windows-1251');
+
+      const badEncodingRe = /&#xFFFD;/g;
+
+      assert.equal(badEncodingRe.test($.html()), false);
+      assert.equal(typeof $, 'function');
+    });
+
+    it('fetches with different encoding and HTML5 charset tag', async () => {
+      const url =
+        'https://www.idnes.cz/fotbal/prvni-liga/fotbalova-liga-8-kolo-slovan-liberec-slovacko.A170925_173123_fotbal_min';
+      const $ = await Resource.create(url);
+      const metaContentType = $('meta[charset]').attr('charset');
+
+      assert.equal(getEncoding(metaContentType), 'windows-1250');
+
+      const badEncodingRe = /&#xFFFD;/g;
+
+      assert.equal(badEncodingRe.test($.html()), false);
       assert.equal(typeof $, 'function');
     });
 

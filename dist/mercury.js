@@ -4,9 +4,11 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var _regeneratorRuntime = _interopDefault(require('@babel/runtime-corejs2/regenerator'));
 var _objectSpread = _interopDefault(require('@babel/runtime-corejs2/helpers/objectSpread'));
+var _objectWithoutProperties = _interopDefault(require('@babel/runtime-corejs2/helpers/objectWithoutProperties'));
 var _asyncToGenerator = _interopDefault(require('@babel/runtime-corejs2/helpers/asyncToGenerator'));
 var URL = _interopDefault(require('url'));
 var cheerio = _interopDefault(require('cheerio'));
+var TurndownService = _interopDefault(require('turndown'));
 var iconv = _interopDefault(require('iconv-lite'));
 var _parseInt = _interopDefault(require('@babel/runtime-corejs2/core-js/parse-int'));
 var _slicedToArray = _interopDefault(require('@babel/runtime-corejs2/helpers/slicedToArray'));
@@ -20,7 +22,6 @@ var _Set = _interopDefault(require('@babel/runtime-corejs2/core-js/set'));
 var _typeof = _interopDefault(require('@babel/runtime-corejs2/helpers/typeof'));
 var _getIterator = _interopDefault(require('@babel/runtime-corejs2/core-js/get-iterator'));
 var _Object$keys = _interopDefault(require('@babel/runtime-corejs2/core-js/object/keys'));
-var TurndownService = _interopDefault(require('turndown'));
 var stringDirection = _interopDefault(require('string-direction'));
 var validUrl = _interopDefault(require('valid-url'));
 var moment = _interopDefault(require('moment-timezone'));
@@ -178,13 +179,16 @@ function excerptContent(content) {
 
 function getEncoding(str) {
   var encoding = DEFAULT_ENCODING;
+  var matches = ENCODING_RE.exec(str);
 
-  if (ENCODING_RE.test(str)) {
-    var testEncode = ENCODING_RE.exec(str)[1];
+  if (matches !== null) {
+    var _matches = _slicedToArray(matches, 2);
 
-    if (iconv.encodingExists(testEncode)) {
-      encoding = testEncode;
-    }
+    str = _matches[1];
+  }
+
+  if (iconv.encodingExists(str)) {
+    encoding = str;
   }
 
   return encoding;
@@ -1701,10 +1705,11 @@ var Resource = {
     var decodedContent = iconv.decode(content, encoding);
     var $ = cheerio.load(decodedContent); // after first cheerio.load, check to see if encoding matches
 
-    var metaContentType = $('meta[http-equiv=content-type]').attr('content');
+    var contentTypeSelector = cheerio.browser ? 'meta[http-equiv=content-type]' : 'meta[http-equiv=content-type i]';
+    var metaContentType = $(contentTypeSelector).attr('content') || $('meta[charset]').attr('charset');
     var properEncoding = getEncoding(metaContentType); // if encodings in the header/body dont match, use the one in the body
 
-    if (properEncoding !== encoding) {
+    if (metaContentType && properEncoding !== encoding) {
       decodedContent = iconv.decode(content, properEncoding);
       $ = cheerio.load(decodedContent);
     }
@@ -6014,9 +6019,7 @@ var GenericExtractor = {
   },
   extract: function extract(options) {
     var html = options.html,
-        $ = options.$,
-        _options$contentType = options.contentType,
-        contentType = _options$contentType === void 0 ? 'html' : _options$contentType;
+        $ = options.$;
 
     if (html && !$) {
       var loaded = cheerio.load(html);
@@ -6050,24 +6053,13 @@ var GenericExtractor = {
         url = _this$url_and_domain.url,
         domain = _this$url_and_domain.domain;
 
-    var convertedContent;
-
-    if (contentType === 'html') {
-      convertedContent = content;
-    } else if (contentType === 'text') {
-      convertedContent = $.text(cheerio.load(content));
-    } else if (contentType === 'markdown') {
-      var turndownService = new TurndownService();
-      convertedContent = turndownService.turndown(content);
-    }
-
     return {
       title: title,
       author: author,
       date_published: date_published || null,
       dek: dek,
       lead_image_url: lead_image_url,
-      content: convertedContent,
+      content: content,
       next_page_url: next_page_url,
       url: url,
       domain: domain,
@@ -6157,9 +6149,7 @@ function select(opts) {
       type = opts.type,
       extractionOpts = opts.extractionOpts,
       _opts$extractHtml = opts.extractHtml,
-      extractHtml = _opts$extractHtml === void 0 ? false : _opts$extractHtml,
-      _opts$contentType = opts.contentType,
-      contentType = _opts$contentType === void 0 ? 'html' : _opts$contentType; // Skip if there's not extraction for this type
+      extractHtml = _opts$extractHtml === void 0 ? false : _opts$extractHtml; // Skip if there's not extraction for this type
 
   if (!extractionOpts) return null; // If a string is hardcoded for a type (e.g., Wikipedia
   // contributors), return the string
@@ -6201,19 +6191,7 @@ function select(opts) {
     $content = Cleaners[type]($content, _objectSpread({}, opts, {
       defaultCleaner: defaultCleaner
     }));
-
-    if (contentType === 'html') {
-      return $.html($content);
-    }
-
-    if (contentType === 'text') {
-      return $.text($content);
-    }
-
-    if (contentType === 'markdown') {
-      var turndownService = new TurndownService();
-      return turndownService.turndown($.html($content));
-    }
+    return $.html($content);
   }
 
   var result; // if selector is an array (e.g., ['img', 'src']),
@@ -6266,9 +6244,7 @@ var RootExtractor = {
     var opts = arguments.length > 1 ? arguments[1] : undefined;
     var _opts = opts,
         contentOnly = _opts.contentOnly,
-        extractedTitle = _opts.extractedTitle,
-        _opts$contentType2 = _opts.contentType,
-        contentType = _opts$contentType2 === void 0 ? 'html' : _opts$contentType2; // This is the generic extractor. Run its extract method
+        extractedTitle = _opts.extractedTitle; // This is the generic extractor. Run its extract method
 
     if (extractor.domain === '*') return extractor.extract(opts);
     opts = _objectSpread({}, opts, {
@@ -6279,8 +6255,7 @@ var RootExtractor = {
       var _content = extractResult(_objectSpread({}, opts, {
         type: 'content',
         extractHtml: true,
-        title: extractedTitle,
-        contentType: contentType
+        title: extractedTitle
       }));
 
       return {
@@ -6429,8 +6404,10 @@ var Mercury = {
   parse: function () {
     var _parse = _asyncToGenerator(
     /*#__PURE__*/
-    _regeneratorRuntime.mark(function _callee(url, html) {
-      var opts,
+    _regeneratorRuntime.mark(function _callee(url) {
+      var _ref,
+          html,
+          opts,
           _opts$fetchAllPages,
           fetchAllPages,
           _opts$fallback,
@@ -6445,13 +6422,14 @@ var Mercury = {
           _result,
           title,
           next_page_url,
+          turndownService,
           _args = arguments;
 
       return _regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              opts = _args.length > 2 && _args[2] !== undefined ? _args[2] : {};
+              _ref = _args.length > 1 && _args[1] !== undefined ? _args[1] : {}, html = _ref.html, opts = _objectWithoutProperties(_ref, ["html"]);
               _opts$fetchAllPages = opts.fetchAllPages, fetchAllPages = _opts$fetchAllPages === void 0 ? true : _opts$fetchAllPages, _opts$fallback = opts.fallback, fallback = _opts$fallback === void 0 ? true : _opts$fallback, _opts$contentType = opts.contentType, contentType = _opts$contentType === void 0 ? 'html' : _opts$contentType; // if no url was passed and this is the browser version,
               // set url to window.location.href and load the html
               // from the current page
@@ -6539,9 +6517,16 @@ var Mercury = {
               });
 
             case 23:
+              if (contentType === 'markdown') {
+                turndownService = new TurndownService();
+                result.content = turndownService.turndown(result.content);
+              } else if (contentType === 'text') {
+                result.content = $.text($(result.content));
+              }
+
               return _context.abrupt("return", result);
 
-            case 24:
+            case 25:
             case "end":
               return _context.stop();
           }
@@ -6549,7 +6534,7 @@ var Mercury = {
       }, _callee, this);
     }));
 
-    function parse(_x, _x2) {
+    function parse(_x) {
       return _parse.apply(this, arguments);
     }
 
