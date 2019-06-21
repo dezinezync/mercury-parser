@@ -5,7 +5,7 @@ import TurndownService from 'turndown';
 import Resource from 'resource';
 import { validateUrl } from 'utils';
 import getExtractor from 'extractors/get-extractor';
-import RootExtractor from 'extractors/root-extractor';
+import RootExtractor, { selectExtendedTypes } from 'extractors/root-extractor';
 import collectAllPages from 'extractors/collect-all-pages';
 
 const Mercury = {
@@ -14,6 +14,8 @@ const Mercury = {
       fetchAllPages = true,
       fallback = true,
       contentType = 'html',
+      headers = {},
+      extend,
     } = opts;
 
     // if no url was passed and this is the browser version,
@@ -34,7 +36,7 @@ const Mercury = {
       };
     }
 
-    const $ = await Resource.create(url, html, parsedUrl);
+    const $ = await Resource.create(url, html, parsedUrl, headers);
 
     // If we found an error creating the resource, return that error
     if ($.failed) {
@@ -55,6 +57,11 @@ const Mercury = {
     const metaCache = $('meta')
       .map((_, node) => $(node).attr('name'))
       .toArray();
+
+    let extendedTypes = {};
+    if (extend) {
+      extendedTypes = selectExtendedTypes(extend, { $, url, html });
+    }
 
     let result = RootExtractor.extract(Extractor, {
       url,
@@ -95,7 +102,7 @@ const Mercury = {
       result.content = $.text($(result.content));
     }
 
-    return result;
+    return { ...result, ...extendedTypes };
   },
 
   browser: !!cheerio.browser,

@@ -95,6 +95,27 @@ export const ExampleExtractor = {
     ...
 ```
 
+### Custom types
+
+To add a custom key to the response, add an `extend` object. The response will include
+results for each key of this object (`categories` in the example below). Setting
+`allowMultiple` to `true` means Mercury will find all the content that matches the
+selectors, and will always return an array of results for that key.
+
+```javascript
+export const ExampleExtractorWithExtend = {
+    ...
+
+    extend: {
+      categories: {
+        selectors: ['.post-taglist a'],
+        allowMultiple: true,
+      }
+    },
+
+    ...
+```
+
 ### Cleaning content from an article
 
 An article's content can be more complex than the other fields, meaning you sometimes need to do more than just provide the selector(s) in order to return clean content.
@@ -306,6 +327,8 @@ As [explained above](#selecting-an-attribute), to return an attribute rather tha
 
   ...
 ```
+
+In rare circumstances, you may want to manipulate the result of the attribute value. In these cases, you can add a third element to the selector array above — a function that will take the value of the attribute and return a value you've transformed it to. E.g., imagine that you want to access a JSON value that's been stringified into an attribute. Your function could take the stringified JSON, parse it, and return just the piece of it you want.
 
 You can refer to the [NewYorkerExtractor](www.newyorker.com/index.js) to see more the rest of the basic selectors.
 
