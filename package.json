@@ -1,6 +1,6 @@
 {
   "name": "@postlight/mercury-parser",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Mercury transforms web pages into clean text. Publishers and programmers use it to make the web make sense, and readers use it to read any web article comfortably.",
   "author": "Postlight <mercury@postlight.com>",
   "homepage": "https://mercury.postlight.com",
@@ -32,7 +32,7 @@
     "lint": "eslint . --fix",
     "lint:ci": "remark . && eslint .",
     "lint-fix-quiet": "eslint --fix --quiet",
-    "build": "yarn lint && rollup -c && yarn test:build",
+    "build": "rollup -c && yarn test:build",
     "build:ci": "rollup -c && yarn test:build",
     "build:web": "yarn lint && rollup -c rollup.config.web.js && yarn test:build:web",
     "build:web:ci": "rollup -c rollup.config.web.js && yarn test:build:web",
@@ -48,7 +48,7 @@
     "generate-parser": "node ./dist/generate-custom-parser.js"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=15"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
