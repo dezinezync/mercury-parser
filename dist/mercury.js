@@ -2,36 +2,196 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var _regeneratorRuntime = _interopDefault(require('@babel/runtime-corejs2/regenerator'));
-var _objectSpread = _interopDefault(require('@babel/runtime-corejs2/helpers/objectSpread'));
-var _objectWithoutProperties = _interopDefault(require('@babel/runtime-corejs2/helpers/objectWithoutProperties'));
-var _asyncToGenerator = _interopDefault(require('@babel/runtime-corejs2/helpers/asyncToGenerator'));
 var URL = _interopDefault(require('url'));
 var cheerio = _interopDefault(require('cheerio'));
 var TurndownService = _interopDefault(require('turndown'));
 var iconv = _interopDefault(require('iconv-lite'));
-var _parseInt = _interopDefault(require('@babel/runtime-corejs2/core-js/parse-int'));
-var _slicedToArray = _interopDefault(require('@babel/runtime-corejs2/helpers/slicedToArray'));
-var _Promise = _interopDefault(require('@babel/runtime-corejs2/core-js/promise'));
 var request = _interopDefault(require('postman-request'));
-var _Reflect$ownKeys = _interopDefault(require('@babel/runtime-corejs2/core-js/reflect/own-keys'));
-var _toConsumableArray = _interopDefault(require('@babel/runtime-corejs2/helpers/toConsumableArray'));
-var _defineProperty = _interopDefault(require('@babel/runtime-corejs2/helpers/defineProperty'));
-var _parseFloat = _interopDefault(require('@babel/runtime-corejs2/core-js/parse-float'));
-var _Set = _interopDefault(require('@babel/runtime-corejs2/core-js/set'));
-var _typeof = _interopDefault(require('@babel/runtime-corejs2/helpers/typeof'));
-var _getIterator = _interopDefault(require('@babel/runtime-corejs2/core-js/get-iterator'));
-var _Object$assign = _interopDefault(require('@babel/runtime-corejs2/core-js/object/assign'));
-var _Object$keys = _interopDefault(require('@babel/runtime-corejs2/core-js/object/keys'));
 var stringDirection = _interopDefault(require('string-direction'));
 var validUrl = _interopDefault(require('valid-url'));
 var moment = _interopDefault(require('moment-timezone'));
 var parseFormat = _interopDefault(require('moment-parseformat'));
 var wuzzy = _interopDefault(require('wuzzy'));
 var difflib = _interopDefault(require('difflib'));
-var _Array$from = _interopDefault(require('@babel/runtime-corejs2/core-js/array/from'));
 var ellipsize = _interopDefault(require('ellipsize'));
-var _Array$isArray = _interopDefault(require('@babel/runtime-corejs2/core-js/array/is-array'));
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+}
+
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+
+function _iterableToArrayLimit(arr, i) {
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance");
+}
 
 var NORMALIZE_RE = /\s{2,}(?![^<>]*<\/(pre|code|textarea)>)/g;
 function normalizeSpaces(text) {
@@ -81,10 +241,8 @@ var DEFAULT_ENCODING = 'utf-8';
 function pageNumFromUrl(url) {
   var matches = url.match(PAGE_IN_HREF_RE);
   if (!matches) return null;
-
-  var pageNum = _parseInt(matches[6], 10); // Return pageNum < 100, otherwise
+  var pageNum = parseInt(matches[6], 10); // Return pageNum < 100, otherwise
   // return null
-
 
   return pageNum < 100 ? pageNum : null;
 }
@@ -208,7 +366,7 @@ var BAD_CONTENT_TYPES_RE = new RegExp("^(".concat(BAD_CONTENT_TYPES.join('|'), "
 var MAX_CONTENT_LENGTH = 5242880; // Turn the global proxy on or off
 
 function get(options) {
-  return new _Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     request(options, function (err, response, body) {
       if (err) {
         reject(err);
@@ -270,7 +428,7 @@ function fetchResource(_x, _x2) {
 function _fetchResource() {
   _fetchResource = _asyncToGenerator(
   /*#__PURE__*/
-  _regeneratorRuntime.mark(function _callee(url, parsedUrl) {
+  regeneratorRuntime.mark(function _callee(url, parsedUrl) {
     var headers,
         options,
         _ref2,
@@ -278,7 +436,7 @@ function _fetchResource() {
         body,
         _args = arguments;
 
-    return _regeneratorRuntime.wrap(function _callee$(_context) {
+    return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -535,7 +693,7 @@ function convertDivs($) {
 function convertSpans($) {
   $('span').each(function (index, span) {
     var $span = $(span);
-    var convertable = $span.parents('p, div').length === 0;
+    var convertable = $span.parents('p, div, li').length === 0;
 
     if (convertable) {
       convertNodeTo$$1($span, $, 'p');
@@ -571,11 +729,9 @@ function convertNodeTo$$1($node, $) {
   }
 
   var attrs = getAttrs(node) || {};
-
-  var attribString = _Reflect$ownKeys(attrs).map(function (key) {
+  var attribString = Reflect.ownKeys(attrs).map(function (key) {
     return "".concat(key, "=").concat(attrs[key]);
   }).join(' ');
-
   var html;
 
   if ($.browser) {
@@ -592,9 +748,8 @@ function convertNodeTo$$1($node, $) {
 }
 
 function cleanForHeight($img, $) {
-  var height = _parseInt($img.attr('height'), 10);
-
-  var width = _parseInt($img.attr('width'), 10) || 20; // Remove images that explicitly have very small heights or
+  var height = parseInt($img.attr('height'), 10);
+  var width = parseInt($img.attr('width'), 10) || 20; // Remove images that explicitly have very small heights or
   // widths, because they are most likely shims or icons,
   // which aren't very useful for reading.
 
@@ -683,7 +838,7 @@ function cleanHOnes$$1(article, $) {
 function removeAllButWhitelist($article, $) {
   $article.find('*').each(function (index, node) {
     var attrs = getAttrs(node);
-    setAttrs(node, _Reflect$ownKeys(attrs).reduce(function (acc, attr) {
+    setAttrs(node, Reflect.ownKeys(attrs).reduce(function (acc, attr) {
       if (WHITELIST_ATTRS_RE.test(attr)) {
         return _objectSpread({}, acc, _defineProperty({}, attr, attrs[attr]));
       }
@@ -801,7 +956,7 @@ function getWeight(node) {
 // the node's score attribute
 // returns null if no score set
 function getScore($node) {
-  return _parseFloat($node.attr('score')) || null;
+  return parseFloat($node.attr('score')) || null;
 }
 
 // return 1 for every comma in text
@@ -1274,7 +1429,7 @@ function absolutizeSet($, rootUrl, $content) {
         return parts.join(' ');
       });
 
-      var absoluteUrlSet = _toConsumableArray(new _Set(absoluteCandidates)).join(', ');
+      var absoluteUrlSet = _toConsumableArray(new Set(absoluteCandidates)).join(', ');
 
       setAttr(node, 'srcset', absoluteUrlSet);
     }
@@ -1359,7 +1514,7 @@ function extractFromMeta$$1($, metaNames, cachedNames) {
       }
     };
 
-    for (var _iterator = _getIterator(foundNames), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+    for (var _iterator = foundNames[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
       var _ret = _loop();
 
       if (_typeof(_ret) === "object") return _ret.v;
@@ -1410,7 +1565,7 @@ function extractFromSelectors$$1($, selectors) {
   var _iteratorError = undefined;
 
   try {
-    for (var _iterator = _getIterator(selectors), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+    for (var _iterator = selectors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
       var selector = _step.value;
       var nodes = $(selector); // If we didn't get exactly one of this selector, this may be
       // a list of articles or comments. Skip it.
@@ -1487,13 +1642,12 @@ function getAttrs(node) {
       attributes = node.attributes;
 
   if (!attribs && attributes) {
-    var attrs = _Reflect$ownKeys(attributes).reduce(function (acc, index) {
+    var attrs = Reflect.ownKeys(attributes).reduce(function (acc, index) {
       var attr = attributes[index];
       if (!attr.name || !attr.value) return acc;
       acc[attr.name] = attr.value;
       return acc;
     }, {});
-
     return attrs;
   }
 
@@ -1518,7 +1672,7 @@ function setAttrs(node, attrs) {
       node.removeAttribute(node.attributes[0].name);
     }
 
-    _Reflect$ownKeys(attrs).forEach(function (key) {
+    Reflect.ownKeys(attrs).forEach(function (key) {
       node.setAttribute(key, attrs[key]);
     });
   }
@@ -1542,8 +1696,7 @@ var TAGS_TO_REMOVE = ['script', 'style', 'form'].join(',');
 function convertLazyLoadedImages($) {
   $('img').each(function (_, img) {
     var attrs = getAttrs(img);
-
-    _Reflect$ownKeys(attrs).forEach(function (attr) {
+    Reflect.ownKeys(attrs).forEach(function (attr) {
       var value = attrs[attr];
 
       if (attr !== 'srcset' && IS_LINK.test(value) && IS_SRCSET.test(value)) {
@@ -1582,12 +1735,12 @@ var Resource = {
   create: function () {
     var _create = _asyncToGenerator(
     /*#__PURE__*/
-    _regeneratorRuntime.mark(function _callee(url, preparedResponse, parsedUrl) {
+    regeneratorRuntime.mark(function _callee(url, preparedResponse, parsedUrl) {
       var headers,
           result,
           validResponse,
           _args = arguments;
-      return _regeneratorRuntime.wrap(function _callee$(_context) {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
@@ -1608,7 +1761,8 @@ var Resource = {
               };
               result = {
                 body: preparedResponse,
-                response: validResponse
+                response: validResponse,
+                alreadyDecoded: true
               };
               _context.next = 9;
               break;
@@ -1648,7 +1802,9 @@ var Resource = {
   }(),
   generateDoc: function generateDoc(_ref) {
     var content = _ref.body,
-        response = _ref.response;
+        response = _ref.response,
+        _ref$alreadyDecoded = _ref.alreadyDecoded,
+        alreadyDecoded = _ref$alreadyDecoded === void 0 ? false : _ref$alreadyDecoded;
     var _response$headers$con = response.headers['content-type'],
         contentType = _response$headers$con === void 0 ? '' : _response$headers$con; // TODO: Implement is_text function from
     // https://github.com/ReadabilityHoldings/readability/blob/8dc89613241d04741ebd42fa9fa7df1b1d746303/readability/utils/text.py#L57
@@ -1659,7 +1815,8 @@ var Resource = {
 
     var $ = this.encodeDoc({
       content: content,
-      contentType: contentType
+      contentType: contentType,
+      alreadyDecoded: alreadyDecoded
     });
 
     if ($.root().children().length === 0) {
@@ -1673,7 +1830,14 @@ var Resource = {
   },
   encodeDoc: function encodeDoc(_ref2) {
     var content = _ref2.content,
-        contentType = _ref2.contentType;
+        contentType = _ref2.contentType,
+        _ref2$alreadyDecoded = _ref2.alreadyDecoded,
+        alreadyDecoded = _ref2$alreadyDecoded === void 0 ? false : _ref2$alreadyDecoded;
+
+    if (alreadyDecoded) {
+      return cheerio.load(content);
+    }
+
     var encoding = getEncoding(contentType);
     var decodedContent = iconv.decode(content, encoding);
     var $ = cheerio.load(decodedContent); // after first cheerio.load, check to see if encoding matches
@@ -1693,13 +1857,13 @@ var Resource = {
 
 var _marked =
 /*#__PURE__*/
-_regeneratorRuntime.mark(range);
+regeneratorRuntime.mark(range);
 
 function range() {
   var start,
       end,
       _args = arguments;
-  return _regeneratorRuntime.wrap(function range$(_context) {
+  return regeneratorRuntime.wrap(function range$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
@@ -1754,8 +1918,7 @@ function addExtractor(extractor) {
     };
   }
 
-  _Object$assign(apiExtractors, mergeSupportedDomains(extractor));
-
+  Object.assign(apiExtractors, mergeSupportedDomains(extractor));
   return apiExtractors;
 }
 
@@ -1888,13 +2051,13 @@ var TwitterExtractor = {
 var NYTimesExtractor = {
   domain: 'www.nytimes.com',
   title: {
-    selectors: ['h1.g-headline', 'h1[itemprop="headline"]', 'h1.headline']
+    selectors: ['h1.g-headline', 'h1[itemprop="headline"]', 'h1.headline', 'h1 .balancedHeadline']
   },
   author: {
-    selectors: [['meta[name="author"]', 'value'], '.g-byline', '.byline']
+    selectors: [['meta[name="author"]', 'value'], '.g-byline', '.byline', ['meta[name="byl"]', 'value']]
   },
   content: {
-    selectors: ['div.g-blocks', 'article#story'],
+    selectors: ['div.g-blocks', 'section[name="articleBody"]', 'article#story'],
     transforms: {
       'img.g-lazy': function imgGLazy($node) {
         var src = $node.attr('src');
@@ -2411,8 +2574,7 @@ var MediumExtractor = {
       // Remove any smaller images that did not get caught by the generic image
       // cleaner (author photo 48px, leading sentence images 79px, etc.).
       img: function img($node) {
-        var width = _parseInt($node.attr('width'), 10);
-
+        var width = parseInt($node.attr('width'), 10);
         if (width < 100) $node.remove();
       }
     },
@@ -5767,6 +5929,173 @@ var EpaperZeitDeExtractor = {
   }
 };
 
+var WwwNdtvComExtractor = {
+  domain: 'www.ndtv.com',
+  title: {
+    selectors: [['meta[name="og:title"]', 'value'], 'h1.entry-title']
+  },
+  author: {
+    selectors: ['span[itemprop="author"] span[itemprop="name"]']
+  },
+  date_published: {
+    selectors: [['span[itemprop="dateModified"]', 'content']]
+  },
+  dek: {
+    selectors: ['h2']
+  },
+  lead_image_url: {
+    selectors: [['meta[name="og:image"]', 'value']]
+  },
+  content: {
+    selectors: ['div[itemprop="articleBody"]'],
+    // Is there anything in the content you selected that needs transformed
+    // before it's consumable content? E.g., unusual lazy loaded images
+    transforms: {
+      // This site puts a dateline in a 'b' above the first paragraph, and then somehow
+      // blends it into the first paragraph with CSS. This transform moves the dateline
+      // to the first paragraph.
+      '.place_cont': function place_cont($node) {
+        if (!$node.parents('p').length) {
+          var nextSibling = $node.next('p');
+
+          if (nextSibling) {
+            $node.remove();
+            nextSibling.prepend($node);
+          }
+        }
+      }
+    },
+    // Is there anything that is in the result that shouldn't be?
+    // The clean selectors will remove anything that matches from
+    // the result
+    clean: ['.highlghts_Wdgt', '.ins_instory_dv_caption', 'input', '._world-wrapper .mt20']
+  }
+};
+
+var ArstechnicaComExtractor = {
+  domain: 'arstechnica.com',
+  // Articles from this site are often paginated, but I was unable to write a CSS
+  // selector to find the next page. On the last page, there will be a link with a CSS
+  // selector indicating that the previous page is next. But the parser appears to find
+  // the next page without this extractor finding it, as long as the fallback option is
+  // left at its default value of true.
+  title: {
+    selectors: ['title']
+  },
+  author: {
+    selectors: ['*[rel="author"] *[itemprop="name"]']
+  },
+  date_published: {
+    selectors: [['.byline time', 'datetime']]
+  },
+  dek: {
+    selectors: ['h2[itemprop="description"]']
+  },
+  lead_image_url: {
+    selectors: [['meta[name="og:image"]', 'value']]
+  },
+  content: {
+    selectors: ['div[itemprop="articleBody"]'],
+    // Is there anything in the content you selected that needs transformed
+    // before it's consumable content? E.g., unusual lazy loaded images
+    transforms: {
+      h2: function h2($node) {
+        // Some pages have an element h2 that is significant, and that the parser will
+        // remove if not following a paragraph. Adding this empty paragraph fixes it, and
+        // the empty paragraph will be removed anyway.
+        $node.before('<p></p>');
+      }
+    },
+    // Is there anything that is in the result that shouldn't be?
+    // The clean selectors will remove anything that matches from
+    // the result.
+    clean: [// Remove enlarge links and separators inside image captions.
+    'figcaption .enlarge-link', 'figcaption .sep', // I could not transform the video into usable elements, so I
+    // removed them.
+    'figure.video', // Image galleries that do not work.
+    '.gallery', 'aside', '.sidebar']
+  }
+};
+
+var WwwEngadgetComExtractor = {
+  domain: 'www.engadget.com',
+  title: {
+    selectors: [['meta[name="og:title"]', 'value']]
+  },
+  author: {
+    selectors: ['a.th-meta[data-ylk*="subsec:author"]']
+  },
+  // Engadget stories have publish dates, but the only representation of them on the page
+  // is in a format like "2h ago". There are also these tags with blank values:
+  // <meta class="swiftype" name="published_at" data-type="date" value="">
+  date_published: {
+    selectors: [// enter selectors
+    ]
+  },
+  dek: {
+    selectors: ['div[class*="o-title_mark"] div']
+  },
+  // Engadget stories do have lead images specified by an og:image meta tag, but selecting
+  // the value attribute of that tag fails. I believe the "&#x2111;" sequence of characters
+  // is triggering this inability to select the attribute value.
+  lead_image_url: {
+    selectors: [// enter selectors
+    ]
+  },
+  content: {
+    selectors: [[// Some figures will be inside div.article-text, but some header figures/images
+    // will not.
+    '#page_body figure:not(div.article-text figure)', 'div.article-text']],
+    // Is there anything in the content you selected that needs transformed
+    // before it's consumable content? E.g., unusual lazy loaded images
+    transforms: {},
+    // Is there anything that is in the result that shouldn't be?
+    // The clean selectors will remove anything that matches from
+    // the result
+    clean: []
+  }
+};
+
+var MaTtiasBeExtractor = {
+  domain: 'ma.ttias.be',
+  title: {
+    selectors: [['meta[name="twitter:title"]', 'value']]
+  },
+  author: {
+    selectors: [['meta[name="author"]', 'value']]
+  },
+  date_published: {
+    selectors: [['meta[name="article:published_time"]', 'value']]
+  },
+  content: {
+    selectors: [['.content']],
+    // Is there anything in the content you selected that needs transformed
+    // before it's consumable content? E.g., unusual lazy loaded images
+    transforms: {
+      h2: function h2($node) {
+        // The "id" attribute values would result in low scores and the element being
+        // removed.
+        $node.attr('id', null); // h1 elements will be demoted to h2, so demote h2 elements to h3.
+
+        return 'h3';
+      },
+      h1: function h1($node) {
+        // The "id" attribute values would result in low scores and the element being
+        // removed.
+        $node.attr('id', null); // A subsequent h2 will be removed if there is not a paragraph before it, so
+        // add a paragraph here. It will be removed anyway because it is empty.
+
+        $node.after('<p></p>');
+      },
+      ul: function ul($node) {
+        // Articles contain lists of links which look like, but are not, navigation
+        // elements. Adding this class attribute avoids them being incorrectly removed.
+        $node.attr('class', 'entry-content-asset');
+      }
+    }
+  }
+};
+
 
 
 var CustomExtractors = /*#__PURE__*/Object.freeze({
@@ -5903,10 +6232,14 @@ var CustomExtractors = /*#__PURE__*/Object.freeze({
   WwwPhoronixComExtractor: WwwPhoronixComExtractor,
   PitchforkComExtractor: PitchforkComExtractor,
   BiorxivOrgExtractor: BiorxivOrgExtractor,
-  EpaperZeitDeExtractor: EpaperZeitDeExtractor
+  EpaperZeitDeExtractor: EpaperZeitDeExtractor,
+  WwwNdtvComExtractor: WwwNdtvComExtractor,
+  ArstechnicaComExtractor: ArstechnicaComExtractor,
+  WwwEngadgetComExtractor: WwwEngadgetComExtractor,
+  MaTtiasBeExtractor: MaTtiasBeExtractor
 });
 
-var Extractors = _Object$keys(CustomExtractors).reduce(function (acc, key) {
+var Extractors = Object.keys(CustomExtractors).reduce(function (acc, key) {
   var extractor = CustomExtractors[key];
   return _objectSpread({}, acc, mergeSupportedDomains(extractor));
 }, {});
@@ -6000,7 +6333,7 @@ function cleanDatePublished(dateString) {
 
   // If string is in milliseconds or seconds, convert to int and return
   if (MS_DATE_STRING.test(dateString) || SEC_DATE_STRING.test(dateString)) {
-    return new Date(_parseInt(dateString, 10)).toISOString();
+    return new Date(parseInt(dateString, 10)).toISOString();
   }
 
   var date = createDate(dateString, timezone, format);
@@ -6095,7 +6428,7 @@ function extractBreadcrumbTitle(splitTitle, text) {
       return acc;
     }, {});
 
-    var _Reflect$ownKeys$redu = _Reflect$ownKeys(termCounts).reduce(function (acc, key) {
+    var _Reflect$ownKeys$redu = Reflect.ownKeys(termCounts).reduce(function (acc, key) {
       if (acc[1] < termCounts[key]) {
         return [key, termCounts[key]];
       }
@@ -6257,9 +6590,9 @@ var GenericContentExtractor = {
     var _iteratorError = undefined;
 
     try {
-      for (var _iterator = _getIterator(_Reflect$ownKeys(opts).filter(function (k) {
+      for (var _iterator = Reflect.ownKeys(opts).filter(function (k) {
         return opts[k] === true;
-      })), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      })[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var key = _step.value;
         opts[key] = false;
         $ = cheerio.load(html);
@@ -6413,7 +6746,7 @@ var GenericAuthorExtractor = {
     var _iteratorError = undefined;
 
     try {
-      for (var _iterator = _getIterator(BYLINE_SELECTORS_RE), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      for (var _iterator = BYLINE_SELECTORS_RE[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var _step$value = _slicedToArray(_step.value, 2),
             selector = _step$value[0],
             regex = _step$value[1];
@@ -6587,11 +6920,8 @@ function scoreBySibling($img) {
 }
 function scoreByDimensions($img) {
   var score = 0;
-
-  var width = _parseFloat($img.attr('width'));
-
-  var height = _parseFloat($img.attr('height'));
-
+  var width = parseFloat($img.attr('width'));
+  var height = parseFloat($img.attr('height'));
   var src = $img.attr('src'); // Penalty for skinny images
 
   if (width && width <= 50) {
@@ -6670,7 +7000,7 @@ var GenericLeadImageUrlExtractor = {
       imgScores[src] = score;
     });
 
-    var _Reflect$ownKeys$redu = _Reflect$ownKeys(imgScores).reduce(function (acc, key) {
+    var _Reflect$ownKeys$redu = Reflect.ownKeys(imgScores).reduce(function (acc, key) {
       return imgScores[key] > acc[1] ? [key, imgScores[key]] : acc;
     }, [null, 0]),
         _Reflect$ownKeys$redu2 = _slicedToArray(_Reflect$ownKeys$redu, 2),
@@ -6690,7 +7020,7 @@ var GenericLeadImageUrlExtractor = {
     var _iteratorError = undefined;
 
     try {
-      for (var _iterator = _getIterator(LEAD_IMAGE_URL_SELECTORS), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      for (var _iterator = LEAD_IMAGE_URL_SELECTORS[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var selector = _step.value;
         var $node = $(selector).first();
         var src = $node.attr('src');
@@ -6763,10 +7093,9 @@ function scoreLinkText(linkText, pageNum) {
   var score = 0;
 
   if (IS_DIGIT_RE.test(linkText.trim())) {
-    var linkTextAsNum = _parseInt(linkText, 10); // If it's the first page, we already got it on the first call.
+    var linkTextAsNum = parseInt(linkText, 10); // If it's the first page, we already got it on the first call.
     // Give it a negative score. Otherwise, up to page 10, give a
     // small bonus.
-
 
     if (linkTextAsNum < 2) {
       score = -30;
@@ -6833,8 +7162,7 @@ function scoreByParents$1($link) {
   var positiveMatch = false;
   var negativeMatch = false;
   var score = 0;
-
-  _Array$from(range(0, 4)).forEach(function () {
+  Array.from(range(0, 4)).forEach(function () {
     if ($parent.length === 0) {
       return;
     }
@@ -6859,7 +7187,6 @@ function scoreByParents$1($link) {
 
     $parent = $parent.parent();
   });
-
   return score;
 }
 
@@ -7022,7 +7349,7 @@ function scoreLinks(_ref) {
     possiblePage.score = score;
     return possiblePages;
   }, {});
-  return _Reflect$ownKeys(scoredPages).length === 0 ? null : scoredPages;
+  return Reflect.ownKeys(scoredPages).length === 0 ? null : scoredPages;
 }
 
 // for multi-page articles
@@ -7050,14 +7377,13 @@ var GenericNextPageUrlExtractor = {
     if (!scoredLinks) return null; // now that we've scored all possible pages,
     // find the biggest one.
 
-    var topPage = _Reflect$ownKeys(scoredLinks).reduce(function (acc, link) {
+    var topPage = Reflect.ownKeys(scoredLinks).reduce(function (acc, link) {
       var scoredLink = scoredLinks[link];
       return scoredLink.score > acc.score ? scoredLink : acc;
     }, {
       score: -100
     }); // If the score is less than 50, we're not confident enough to use it,
     // so we fail.
-
 
     if (topPage.score >= 50) {
       return topPage.href;
@@ -7219,10 +7545,9 @@ var Detectors = {
   'meta[name="generator"][value="blogger"]': BloggerExtractor
 };
 function detectByHtml($) {
-  var selector = _Reflect$ownKeys(Detectors).find(function (s) {
+  var selector = Reflect.ownKeys(Detectors).find(function (s) {
     return $(s).length > 0;
   });
-
   return Detectors[selector];
 }
 
@@ -7244,8 +7569,7 @@ function cleanBySelectors($content, $, _ref) {
 function transformElements($content, $, _ref2) {
   var transforms = _ref2.transforms;
   if (!transforms) return $content;
-
-  _Reflect$ownKeys(transforms).forEach(function (key) {
+  Reflect.ownKeys(transforms).forEach(function (key) {
     var $matches = $(key, $content);
     var value = transforms[key]; // If value is a string, convert directly
 
@@ -7264,13 +7588,12 @@ function transformElements($content, $, _ref2) {
       });
     }
   });
-
   return $content;
 }
 
 function findMatchingSelector($, selectors, extractHtml, allowMultiple) {
   return selectors.find(function (selector) {
-    if (_Array$isArray(selector)) {
+    if (Array.isArray(selector)) {
       if (extractHtml) {
         return selector.reduce(function (acc, s) {
           return acc && $(s).length > 0;
@@ -7321,7 +7644,7 @@ function select(opts) {
     // selectors to include in the result. Note that all selectors in the
     // array must match in order for this selector to trigger
 
-    if (_Array$isArray(matchingSelector)) {
+    if (Array.isArray(matchingSelector)) {
       $content = $(matchingSelector.join(','));
       var $wrapper = $('<div></div>');
       $content.each(function (_, element) {
@@ -7360,7 +7683,7 @@ function select(opts) {
   var result; // if selector is an array (e.g., ['img', 'src']),
   // extract the attr
 
-  if (_Array$isArray(matchingSelector)) {
+  if (Array.isArray(matchingSelector)) {
     var _matchingSelector = _slicedToArray(matchingSelector, 3),
         selector = _matchingSelector[0],
         attr = _matchingSelector[1],
@@ -7380,7 +7703,7 @@ function select(opts) {
     });
   }
 
-  result = _Array$isArray(result.toArray()) && allowMultiple ? result.toArray() : result[0]; // Allow custom extractor to skip default cleaner
+  result = Array.isArray(result.toArray()) && allowMultiple ? result.toArray() : result[0]; // Allow custom extractor to skip default cleaner
   // for this type; defaults to true
 
   if (defaultCleaner && Cleaners[type]) {
@@ -7391,8 +7714,7 @@ function select(opts) {
 }
 function selectExtendedTypes(extend, opts) {
   var results = {};
-
-  _Reflect$ownKeys(extend).forEach(function (t) {
+  Reflect.ownKeys(extend).forEach(function (t) {
     if (!results[t]) {
       results[t] = select(_objectSpread({}, opts, {
         type: t,
@@ -7400,7 +7722,6 @@ function selectExtendedTypes(extend, opts) {
       }));
     }
   });
-
   return results;
 }
 
@@ -7526,9 +7847,9 @@ function collectAllPages(_x) {
 function _collectAllPages() {
   _collectAllPages = _asyncToGenerator(
   /*#__PURE__*/
-  _regeneratorRuntime.mark(function _callee(_ref) {
+  regeneratorRuntime.mark(function _callee(_ref) {
     var next_page_url, html, $, metaCache, result, Extractor, title, url, pages, previousUrls, extractorOpts, nextPageResult, word_count;
-    return _regeneratorRuntime.wrap(function _callee$(_context) {
+    return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -7557,7 +7878,6 @@ function _collectAllPages() {
               html: html,
               $: $,
               metaCache: metaCache,
-              contentOnly: true,
               extractedTitle: title,
               previousUrls: previousUrls
             };
@@ -7595,7 +7915,7 @@ var Mercury = {
   parse: function () {
     var _parse = _asyncToGenerator(
     /*#__PURE__*/
-    _regeneratorRuntime.mark(function _callee(url) {
+    regeneratorRuntime.mark(function _callee(url) {
       var _ref,
           html,
           opts,
@@ -7621,7 +7941,7 @@ var Mercury = {
           turndownService,
           _args = arguments;
 
-      return _regeneratorRuntime.wrap(function _callee$(_context) {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
