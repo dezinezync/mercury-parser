@@ -1,3 +1,6 @@
+import "core-js/stable";
+import "regenerator-runtime/runtime";
+
 import URL from 'url';
 import cheerio from 'cheerio';
 import TurndownService from 'turndown';

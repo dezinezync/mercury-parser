@@ -13,18 +13,17 @@
           "./test-helpers.js": "test-helpers",
           "./mercury.js": "mercury"
         }
-      }
+      },
+    ],
+    [
+      "@babel/plugin-transform-runtime"
     ]
   ],
   "env": {
     "development": {
       "plugins": [
         [
-          "@babel/plugin-transform-runtime",
-          {
-            "corejs": 2,
-            "regenerator": true
-          }
+          "@babel/plugin-transform-runtime"
         ]
       ]
     }
