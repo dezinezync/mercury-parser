@@ -1,6 +1,6 @@
 {
   "name": "@postlight/mercury-parser",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Mercury transforms web pages into clean text. Publishers and programmers use it to make the web make sense, and readers use it to read any web article comfortably.",
   "author": "Postlight <mercury@postlight.com>",
   "homepage": "https://mercury.postlight.com",
@@ -32,7 +32,7 @@
     "lint": "eslint . --fix",
     "lint:ci": "remark . && eslint .",
     "lint-fix-quiet": "eslint --fix --quiet",
-    "build": "yarn lint && rollup -c && yarn test:build",
+    "build": "rollup -c && yarn test:build",
     "build:ci": "rollup -c && yarn test:build",
     "build:web": "yarn lint && rollup -c rollup.config.web.js && yarn test:build:web",
     "build:web:ci": "rollup -c rollup.config.web.js && yarn test:build:web",
@@ -48,16 +48,17 @@
     "generate-parser": "node ./dist/generate-custom-parser.js"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=15"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
-    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.13.15",
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/runtime": "^7.0.0",
     "@jesses/circle-github-bot": "^2.1.0",
     "@octokit/rest": "^16.9.0",
+    "@rollup/plugin-babel": "^5.3.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.4.2",
@@ -99,19 +100,19 @@
     "remark-lint": "^6.0.4",
     "remark-preset-lint-recommended": "^3.0.2",
     "requirejs": "^2.3.6",
-    "rollup": "^1.1.0",
-    "rollup-plugin-babel": "^4.0.1",
-    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup": "^2.47.0",
     "rollup-plugin-node-globals": "^1.4.0",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-uglify": "^6.0.1",
     "watchify": "^3.11.1"
   },
   "dependencies": {
-    "@babel/runtime-corejs2": "^7.2.0",
+    "@babel/runtime-corejs2": "7.2.0",
     "@postlight/ci-failed-test-reporter": "^1.0",
+    "@rollup/plugin-commonjs": "^18.1.0",
     "browser-request": "github:postlight/browser-request#feat-add-headers-to-response",
     "cheerio": "^0.22.0",
+    "core-js": "^3.11.2",
     "difflib": "github:postlight/difflib.js",
     "ellipsize": "0.1.0",
     "iconv-lite": "0.5.0",

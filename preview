@@ -17,7 +17,7 @@ var urls = args.urls
 
 if (!args.opts.find(arg => arg === '--no-rebuild')) {
   console.log('Rebuilding Mercury')
-  execSync('MERCURY_TEST_BUILD=true npm run build')
+  execSync('MERCURY_TEST_BUILD=true yarn build')
 }
 
 var Mercury = require('./dist/mercury_test')
