@@ -138,3 +138,4 @@ export * from './www.engadget.com';
 export * from './ma.ttias.be';
 export * from './www.bbc.co.uk';
 export * from './www.bbc.com';
+export * from './www.archdaily.com';

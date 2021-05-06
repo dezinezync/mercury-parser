@@ -6081,6 +6081,46 @@ var WwwBbcComExtractor = {
   }
 };
 
+var WwwArchdailyComExtractor = {
+  domain: 'www.archdaily.com',
+  title: {
+    selectors: ['h1.afd-title-big']
+  },
+  author: {
+    selectors: ['.article-meta .theAuthor strong']
+  },
+  date_published: {
+    selectors: [['meta[name="article:published_time"]', 'value']]
+  },
+  dek: {
+    selectors: [// enter selectors
+    ]
+  },
+  lead_image_url: {
+    selectors: [['meta[name="og:image"]', 'value']]
+  },
+  content: {
+    selectors: ['#single-content'],
+    // Is there anything in the content you selected that needs transformed
+    // before it's consumable content? E.g., unusual lazy loaded images
+    transforms: {
+      '.js-image-size__link ': function jsImageSize__link($node) {
+        var _$node$find;
+
+        var $img = (_$node$find = $node.find('picture')) === null || _$node$find === void 0 ? void 0 : _$node$find['0'];
+
+        if ($img) {
+          $node.replaceWith($img);
+        }
+      }
+    },
+    // Is there anything that is in the result that shouldn't be?
+    // The clean selectors will remove anything that matches from
+    // the result
+    clean: ['svg', '.article-meta', '.figcaption', '.afd-specs', '.afd-specs__btn', '.thumbs', '#interesting-products']
+  }
+};
+
 var CustomExtractors = /*#__PURE__*/Object.freeze({
   __proto__: null,
   BloggerExtractor: BloggerExtractor,
@@ -6222,7 +6262,8 @@ var CustomExtractors = /*#__PURE__*/Object.freeze({
   WwwEngadgetComExtractor: WwwEngadgetComExtractor,
   MaTtiasBeExtractor: MaTtiasBeExtractor,
   WwwBbcCoUkExtractor: WwwBbcCoUkExtractor,
-  WwwBbcComExtractor: WwwBbcComExtractor
+  WwwBbcComExtractor: WwwBbcComExtractor,
+  WwwArchdailyComExtractor: WwwArchdailyComExtractor
 });
 
 function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
