@@ -5967,35 +5967,6 @@ var WwwBbcCoUkExtractor = {
     selectors: [['meta[name="twitter:image:src"]', 'value'], ['.ssrcss-evoj7m-Image', 'src']]
   },
   content: {
-    selectors: ['article.ssrcss-5h7eao-ArticleWrapper div.ssrcss-uf6wea-RichTextComponentWrapper'],
-    // Is there anything in the content you selected that needs transformed
-    // before it's consumable content? E.g., unusual lazy loaded images
-    transforms: {},
-    // Is there anything that is in the result that shouldn't be?
-    // The clean selectors will remove anything that matches from
-    // the result
-    clean: ['header.ssrcss-94m6rd-HeadingWrapper', '.ssrcss-18mjolk-ComponentWrapper']
-  }
-};
-
-var WwwBbcComExtractor = {
-  domain: 'www.bbc.com',
-  title: {
-    selectors: ['h1#main-heading']
-  },
-  author: {
-    selectors: ['.ssrcss-1pjc44v-Contributor strong']
-  },
-  date_published: {
-    selectors: [['.ssrcss-1hizfh0-MetadataSnippet time', 'datetime']]
-  },
-  dek: {
-    selectors: [null]
-  },
-  lead_image_url: {
-    selectors: [['meta[name="twitter:image:src"]', 'value'], ['.ssrcss-evoj7m-Image', 'src']]
-  },
-  content: {
     selectors: ['.ssrcss-5h7eao-ArticleWrapper'],
     // Is there anything in the content you selected that needs transformed
     // before it's consumable content? E.g., unusual lazy loaded images
@@ -6017,12 +5988,84 @@ var WwwBbcComExtractor = {
         if (p) {
           $node.replaceWith(p);
         }
+      },
+      'noscript': function noscript($node) {
+        console.log($node);
       }
     },
     // Is there anything that is in the result that shouldn't be?
     // The clean selectors will remove anything that matches from
     // the result
     clean: ['.ssrcss-94m6rd-HeadingWrapper', '.ssrcss-18mjolk-ComponentWrapper', '#piano-inline1']
+  }
+};
+
+require('util');
+
+var WwwBbcComExtractor = {
+  domain: 'www.bbc.com',
+  title: {
+    selectors: ['h1#main-heading']
+  },
+  author: {
+    selectors: ['.ssrcss-1pjc44v-Contributor strong']
+  },
+  date_published: {
+    selectors: [['.ssrcss-1hizfh0-MetadataSnippet time', 'datetime']]
+  },
+  dek: {
+    selectors: [null]
+  },
+  lead_image_url: {
+    selectors: [['meta[name="twitter:image:src"]', 'value'], ['.ssrcss-evoj7m-Image', 'src']]
+  },
+  content: {
+    selectors: ['article'],
+    // Is there anything in the content you selected that needs transformed
+    // before it's consumable content? E.g., unusual lazy loaded images
+    transforms: {
+      'figure': function figure($node) {
+        var _$node$find;
+
+        // console.log($node);
+        var $img = (_$node$find = $node.find('img')) === null || _$node$find === void 0 ? void 0 : _$node$find['0']; // console.log($img);
+
+        if ($img) {
+          $node.replaceWith($img);
+        }
+      },
+      '.ssrcss-vk3nhx-ComponentWrapper': function ssrcssVk3nhxComponentWrapper($node) {
+        var _$node$find2;
+
+        var img = (_$node$find2 = $node.find('img')) === null || _$node$find2 === void 0 ? void 0 : _$node$find2[0];
+
+        if (img) {
+          $node.replaceWith(img);
+        }
+      },
+      '.ssrcss-18mjolk-ComponentWrapper': function ssrcss18mjolkComponentWrapper($node) {
+        var _$node$find3;
+
+        var img = (_$node$find3 = $node.find('img')) === null || _$node$find3 === void 0 ? void 0 : _$node$find3[0];
+
+        if (img) {
+          $node.replaceWith(img);
+        }
+      },
+      '.ssrcss-uf6wea-RichTextComponentWrapper': function ssrcssUf6weaRichTextComponentWrapper($node) {
+        var _$node$find4;
+
+        var p = (_$node$find4 = $node.find('p')) === null || _$node$find4 === void 0 ? void 0 : _$node$find4[0];
+
+        if (p) {
+          $node.replaceWith(p);
+        }
+      }
+    },
+    // Is there anything that is in the result that shouldn't be?
+    // The clean selectors will remove anything that matches from
+    // the result
+    clean: ['.ssrcss-94m6rd-HeadingWrapper', '#piano-inline1', '#piano-inline2', '#piano-inline3']
   }
 };
 
