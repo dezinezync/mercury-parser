@@ -20,20 +20,23 @@ export const NYTimesExtractor = {
   },
 
   content: {
-    selectors: ['div.g-blocks', 'section[name="articleBody"]', 'article#story'],
+    selectors: ['article#story section.meteredContent'],
 
     transforms: {
-      'img.g-lazy': $node => {
-        let src = $node.attr('src');
-        const width = 640;
-
-        src = src.replace('{{size}}', width);
-        $node.attr('src', src);
+      '.ehw59r15': $node => {
+        let $img = $node.find('img')?.['0']
+        if ($img) {
+          $node.replaceWith($img)
+        }
+        else {
+          return null
+        }
       },
     },
 
     clean: [
       '.ad',
+      '.NYTAppHideMasthead',
       'header#story-header',
       '.story-body-1 .lede.video',
       '.visually-hidden',

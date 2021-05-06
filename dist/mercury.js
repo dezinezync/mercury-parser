@@ -1892,16 +1892,21 @@ var NYTimesExtractor = {
     selectors: [['meta[name="author"]', 'value'], '.g-byline', '.byline', ['meta[name="byl"]', 'value']]
   },
   content: {
-    selectors: ['div.g-blocks', 'section[name="articleBody"]', 'article#story'],
+    selectors: ['article#story section.meteredContent'],
     transforms: {
-      'img.g-lazy': function imgGLazy($node) {
-        var src = $node.attr('src');
-        var width = 640;
-        src = src.replace('{{size}}', width);
-        $node.attr('src', src);
+      '.ehw59r15': function ehw59r15($node) {
+        var _$node$find;
+
+        var $img = (_$node$find = $node.find('img')) === null || _$node$find === void 0 ? void 0 : _$node$find['0'];
+
+        if ($img) {
+          $node.replaceWith($img);
+        } else {
+          return null;
+        }
       }
     },
-    clean: ['.ad', 'header#story-header', '.story-body-1 .lede.video', '.visually-hidden', '#newsletter-promo', '.promo', '.comments-button', '.hidden', '.comments', '.supplemental', '.nocontent', '.story-footer-links']
+    clean: ['.ad', '.NYTAppHideMasthead', 'header#story-header', '.story-body-1 .lede.video', '.visually-hidden', '#newsletter-promo', '.promo', '.comments-button', '.hidden', '.comments', '.supplemental', '.nocontent', '.story-footer-links']
   },
   date_published: {
     selectors: [['meta[name="article:published"]', 'value']]
